@@ -16,7 +16,7 @@ import java.util.List;
 
 // ...
 
-class MyClass {
+class Auth {
 
     // Path to client_secrets.json which should contain a JSON document such as:
     //   {
@@ -27,7 +27,7 @@ class MyClass {
     //       "token_uri": "https://accounts.google.com/o/oauth2/token"
     //     }
     //   }
-    private static final String CLIENTSECRETS_LOCATION = "client_secrets.json";
+    private static final String CLIENTSECRETS_LOCATION = "C:\\idea\\drive-test\\drive-test.json";
 
     private static final String REDIRECT_URI = "<YOUR_REGISTERED_REDIRECT_URI>";
     private static final List<String> SCOPES = Arrays.asList(
@@ -143,7 +143,7 @@ class MyClass {
             JacksonFactory jsonFactory = new JacksonFactory();
             GoogleClientSecrets clientSecrets =
                     GoogleClientSecrets.load(jsonFactory,
-                           new InputStreamReader(MyClass.class.getResourceAsStream(CLIENTSECRETS_LOCATION)));
+                           new InputStreamReader(Auth.class.getResourceAsStream(CLIENTSECRETS_LOCATION)));
             flow =
                     new GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, SCOPES)
                             .setAccessType("offline").setApprovalPrompt("force").build();
