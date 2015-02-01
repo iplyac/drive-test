@@ -7,7 +7,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
-import com.google.api.services.oauth2.model.Userinfo;
+import com.google.api.services.oauth2.model.Userinfoplus;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -179,13 +179,13 @@ class MyClass {
      * @return User's information.
      * @throws NoUserIdException An error occurred.
      */
-    static Userinfo getUserInfo(Credential credentials)
+    static Userinfoplus getUserInfo(Credential credentials)
             throws NoUserIdException {
         Oauth2 userInfoService =
                 new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credentials).build();
-        Userinfo userInfo = null;
+        Userinfoplus userInfo = null;
         try {
-            userInfo = userInfoService.userinfo().get().execute();
+            userInfo = userInfoService.userinfo().get().execute();//userinfo().get().execute();
         } catch (IOException e) {
             System.err.println("An error occurred: " + e);
         }
@@ -236,7 +236,7 @@ class MyClass {
         String emailAddress = "";
         try {
             Credential credentials = exchangeCode(authorizationCode);
-            Userinfo userInfo = getUserInfo(credentials);
+            Userinfoplus userInfo = getUserInfo(credentials);
             String userId = userInfo.getId();
             emailAddress = userInfo.getEmail();
             if (credentials.getRefreshToken() != null) {
