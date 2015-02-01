@@ -9,8 +9,7 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,15 +26,15 @@ class Auth {
     //       "token_uri": "https://accounts.google.com/o/oauth2/token"
     //     }
     //   }
-    private static final String CLIENTSECRETS_LOCATION = "C:\\idea\\drive-test\\drive-test.json";
+    private static final String CLIENTSECRETS_LOCATION = "drive-test.json";
 
-    private static final String REDIRECT_URI = "<YOUR_REGISTERED_REDIRECT_URI>";
+    private static final String REDIRECT_URI = "qq";
     private static final List<String> SCOPES = Arrays.asList(
             "https://www.googleapis.com/auth/drive.file",
             "email",
             "profile");
-
     private static GoogleAuthorizationCodeFlow flow = null;
+
 
     /**
      * Exception thrown when an error occurred while retrieving credentials.
@@ -143,7 +142,7 @@ class Auth {
             JacksonFactory jsonFactory = new JacksonFactory();
             GoogleClientSecrets clientSecrets =
                     GoogleClientSecrets.load(jsonFactory,
-                           new InputStreamReader(Auth.class.getResourceAsStream(CLIENTSECRETS_LOCATION)));
+                           new InputStreamReader(new FileInputStream("drive-test.json")));
             flow =
                     new GoogleAuthorizationCodeFlow.Builder(httpTransport, jsonFactory, clientSecrets, SCOPES)
                             .setAccessType("offline").setApprovalPrompt("force").build();
