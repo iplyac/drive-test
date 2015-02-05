@@ -10,31 +10,31 @@
     <name>Drive Test</name>
     <packaging>jar</packaging>
     <dependencies>
-
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-drive</artifactId>
-            <version>v2-rev158-1.19.1</version>
+            <version>v2-rev135-1.19.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.18.0-rc</version>
-        </dependency>
-
         <dependency>
             <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-jackson</artifactId>
-            <version>1.15.0-rc</version>
+            <artifactId>google-http-client</artifactId>
+            <version>${project.http.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-oauth2</artifactId>
-            <version>v2-rev86-1.19.1</version>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson2</artifactId>
+            <version>${project.http.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>${project.oauth.version}</version>
+        </dependency>
     </dependencies>
+    <properties>
+        <project.http.version>1.19.0</project.http.version>
+        <project.oauth.version>1.19.0</project.oauth.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
 </project>
