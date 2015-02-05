@@ -1,16 +1,4 @@
-package com.cz.drive;/*
- * Copyright (c) 2012 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
- */
+package com.cz.drive;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -25,77 +13,46 @@ import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Preconditions;
-import com.google.api.client.util.store.DataStoreFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
-import com.cz.drive.FileUploadProgressListener;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.List;
 
-/**
- * A sample application that runs multiple requests against the Drive API. The requests this sample
- * makes are:
- * <ul>
- * <li>Does a resumable media upload</li>
- * <li>Updates the uploaded file by renaming it</li>
- * <li>Does a resumable media download</li>
- * <li>Does a direct media upload</li>
- * <li>Does a direct media download</li>
- * </ul>
- *
- * @author rmistry@google.com (Ravi Mistry)
- */
 public class DriveSample {
 
-    /**
-     * Be sure to specify the name of your application. If the application name is {@code null} or
-     * blank, the application will log a warning. Suggested format is "MyCompany-ProductName/1.0".
-     */
     private static final String APPLICATION_NAME = "DriveSample1";
 
-    private static final String UPLOAD_FILE_PATH = "C:\\test.xml";
+    private static final String FILE_NAME = "cz.cfg";
+    private static final java.io.File MY_DRIVE_FILE = new java.io.File(FILE_NAME);
+
+    private static final String UPLOAD_FILE_PATH = "C:\\Users\\Иосиф\\Downloads\\requests.json.txt";
     private static final String DIR_FOR_DOWNLOADS = "C:\\Users\\Public\\Downloads\\";
     private static final java.io.File UPLOAD_FILE = new java.io.File(UPLOAD_FILE_PATH);
-
-    /** Directory to store user credentials. */
     private static final java.io.File DATA_STORE_DIR =
             new java.io.File(System.getProperty("user.home"), ".store/drive_sample");
-
-    /**
-     * Global instance of the {@link DataStoreFactory}. The best practice is to make it a single
-     * globally shared instance across your application.
-     */
     private static FileDataStoreFactory dataStoreFactory;
-
-    /** Global instance of the HTTP transport. */
     private static HttpTransport httpTransport;
-
-    /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-    /** Global Drive API client. */
     private static Drive drive;
 
-    /** Authorizes the installed application to access user's protected data. */
     private static Credential authorize() throws Exception {
         // load client secrets
-        System.out.println(DriveSample.class.getPackage());
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
                 new InputStreamReader(DriveSample.class.getResourceAsStream("/json/client_secret.json")));
-        if (clientSecrets.getDetails().getClientId().startsWith("Enter")
+/*        if (clientSecrets.getDetails().getClientId().startsWith("Enter")
                 || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
             System.out.println(
                     "Enter Client ID and Secret from https://code.google.com/apis/console/?api=drive "
                             + "into drive-cmdline-sample/src/main/resources/client_secrets.json");
             System.exit(1);
-        }
+        }*/
         // set up authorization code flow
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, clientSecrets,
@@ -106,30 +63,29 @@ public class DriveSample {
     }
 
     public static void main(String[] args) {
-        Preconditions.checkArgument(
-                !UPLOAD_FILE_PATH.startsWith("Enter ") && !DIR_FOR_DOWNLOADS.startsWith("Enter "),
-                "Please enter the upload file path and download directory in %s", DriveSample.class);
-
         try {
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
             dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
-            // authorization
             Credential credential = authorize();
-            // set up the global Drive instance
             drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(
                     APPLICATION_NAME).build();
 
-            // run commands
-
-            File uploadedFile = uploadFile(false);
-
+/*            File uploadedFile = uploadFile(false);
             File updatedFile = updateFileWithTestSuffix(uploadedFile.getId());
-
             downloadFile(false, updatedFile);
+            uploadedFile = uploadFile(true);*/
+/*            FileContent mediaContent = new FileContent("image/jpeg", MY_DRIVE_FILE);
+            Drive.Files.Get get = drive.files().get(FILE_NAME);*/
+//            FileList fileList = drive.files().list().execute();
+            List<File> fileList = drive.files().list().execute().getItems();
+            String file;
+            for (File myfile:fileList)
+                System.out.println(myfile.getOriginalFilename());
+            //String file = fileList.get(1).getOriginalFilename();
+//            File file = get.execute();
 
-            uploadedFile = uploadFile(true);
-
-            downloadFile(true, uploadedFile);
+//            downloadFile(true, file);
+//            downloadFile(true, uploadedFile);
 
             return;
         } catch (IOException e) {
@@ -140,7 +96,6 @@ public class DriveSample {
         System.exit(1);
     }
 
-    /** Uploads a file using either resumable or direct media upload. */
     private static File uploadFile(boolean useDirectUpload) throws IOException {
         File fileMetadata = new File();
         fileMetadata.setTitle(UPLOAD_FILE.getName());
@@ -154,7 +109,6 @@ public class DriveSample {
         return insert.execute();
     }
 
-    /** Updates the name of the uploaded file to have a "drivetest-" prefix. */
     private static File updateFileWithTestSuffix(String id) throws IOException {
         File fileMetadata = new File();
         fileMetadata.setTitle("drivetest-" + UPLOAD_FILE.getName());
@@ -163,7 +117,6 @@ public class DriveSample {
         return update.execute();
     }
 
-    /** Downloads a file using either resumable or direct media download. */
     private static void downloadFile(boolean useDirectDownload, File uploadedFile)
             throws IOException {
         // create parent directory (if necessary)
