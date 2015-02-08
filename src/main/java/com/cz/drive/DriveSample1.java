@@ -115,7 +115,7 @@ public class DriveSample1 {
 
             makeFileMap(drive);
             String fileID = getFileID("/folder2/new.txt");
-
+            if (!fileID.isEmpty())
             downloadFile(true, drive.files().get(fileID).execute());
 
         } catch (IOException e) {
@@ -149,11 +149,18 @@ public class DriveSample1 {
         for (int nesting = 0; nesting < folders.length; nesting++)
         {
             List<String> filesIDInCurrentDirectory = getFilesIDInFolder(currentEntryID);
-            for (String fileID:filesIDInCurrentDirectory)
-                if (getNameByID(drive, fileID).equals(folders[nesting])){
+            if (!filesIDInCurrentDirectory.isEmpty())
+            for (String fileID:filesIDInCurrentDirectory) {
+                if (getNameByID(drive, fileID).equals(folders[nesting])) {
                     currentEntryID = fileID;
                     break;
                 }
+            }
+            else{
+                System.out.println("Path '" + path +"' is incorrect");
+                currentEntryID = "";
+                break;
+            }
         }
 
         return currentEntryID;
@@ -166,7 +173,7 @@ public class DriveSample1 {
         {
             ChildList folderEntries = drive.children().list(fileID).execute();
             for (ChildReference child:folderEntries.getItems())
-                fileIDList.add(child.getId() + "");
+                fileIDList.add(child.getId());
         }catch(IOException e)
               {e.printStackTrace();}
         return fileIDList;
