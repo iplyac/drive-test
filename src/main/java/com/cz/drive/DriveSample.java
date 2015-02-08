@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collections;
-import java.util.List;
 
 public class DriveSample {
 
@@ -32,7 +31,7 @@ public class DriveSample {
     private static final String FILE_NAME = "cz.cfg";
     private static final java.io.File MY_DRIVE_FILE = new java.io.File(FILE_NAME);
 
-    private static final String UPLOAD_FILE_PATH = "C:\\Users\\Иосиф\\Downloads\\requests.json.txt";
+    private static final String UPLOAD_FILE_PATH = "C:\\Users\\Иосиф\\Downloads\\ERROR.JPG";
     private static final String DIR_FOR_DOWNLOADS = "C:\\Users\\Public\\Downloads\\";
     private static final java.io.File UPLOAD_FILE = new java.io.File(UPLOAD_FILE_PATH);
     private static final java.io.File DATA_STORE_DIR =
@@ -45,7 +44,7 @@ public class DriveSample {
     private static Credential authorize() throws Exception {
         // load client secrets
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-                new InputStreamReader(DriveSample.class.getResourceAsStream("/json/client_secret.json")));
+                new InputStreamReader(DriveSample.class.getResourceAsStream("/client_secret.json")));
 /*        if (clientSecrets.getDetails().getClientId().startsWith("Enter")
                 || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
             System.out.println(
@@ -70,22 +69,14 @@ public class DriveSample {
             drive = new Drive.Builder(httpTransport, JSON_FACTORY, credential).setApplicationName(
                     APPLICATION_NAME).build();
 
-/*            File uploadedFile = uploadFile(false);
+            File uploadedFile = uploadFile(false);
             File updatedFile = updateFileWithTestSuffix(uploadedFile.getId());
             downloadFile(false, updatedFile);
-            uploadedFile = uploadFile(true);*/
-/*            FileContent mediaContent = new FileContent("image/jpeg", MY_DRIVE_FILE);
-            Drive.Files.Get get = drive.files().get(FILE_NAME);*/
-//            FileList fileList = drive.files().list().execute();
-            List<File> fileList = drive.files().list().execute().getItems();
-            String file;
-            for (File myfile:fileList)
-                System.out.println(myfile.getOriginalFilename());
-            //String file = fileList.get(1).getOriginalFilename();
-//            File file = get.execute();
+            uploadedFile = uploadFile(true);
+
 
 //            downloadFile(true, file);
-//            downloadFile(true, uploadedFile);
+            downloadFile(true, uploadedFile);
 
             return;
         } catch (IOException e) {
